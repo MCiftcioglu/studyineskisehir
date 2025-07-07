@@ -32,19 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Bulutların sağa ve sola açılması
   heroTimeline.to('.cloud-1', {
     x: '-50%', // Sola doğru %50 kaydır
-    opacity: 0;
+    opacity: 0,
     duration: 2,
   }, 0);
 
   heroTimeline.to('.cloud-2', {
     x: '50%', // Sağa doğru %50 kaydır
-    opacity: 0;
+    opacity: 0,
     duration: 2,
   }, 0);
   
     heroTimeline.to('.cloud-3', {
     x: '-30%', // Sola doğru %30 kaydır
-    opacity: 0;
+    opacity: 0,
     duration: 2,
   }, 0);
 

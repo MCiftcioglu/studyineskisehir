@@ -20,6 +20,13 @@ body {
     width: 80px; /* Varsayılan (mobil) logo boyutu */
     height: auto;
     transition: transform 0.3s ease, width 0.5s ease-in-out; /* Genişlik geçişi eklendi */
+
+}
+
+@media (min-width: 768px) {
+    .site-logo img {
+        width: 120px; /* Masaüstü başlangıç boyutu (380px değil!) */
+    }
 }
 
 .site-logo:hover img {
@@ -124,16 +131,17 @@ h2 {
 /* Şehir Tanıtımı - Yatay Kaydırma */
 .horizontal-scroll-container {
     display: flex;
-    height: 80vh; /* Animasyon için belirli bir yükseklik */
+    min-height: 60vh; /* İçeriğe göre ayarlanacak minimum yükseklik */
+    height: auto;    /* İçeriğin yüksekliğine göre otomatik ayarla */
     overflow: hidden; /* Dışarı taşanları gizle */
-    align-items: center;
+    align-items: flex-start; /* Öğeleri üste hizala */
 }
 
 .feature-grid {
     display: flex; /* Yatayda sıralamak için */
-    align-items: stretch; /* Yükseklikleri eşitle */
+    align-items: center; /* Öğeleri dikeyde ortala */
     gap: 30px;
-    padding: 0 5vw; /* Kenarlardan boşluk */
+    padding: 30px 5vw; /* Üst ve alt boşluk eklendi, kenarlardan boşluk */
     box-sizing: border-box;
     flex-shrink: 0; /* Küçülmesini engelle */
 }
@@ -146,6 +154,9 @@ h2 {
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     padding: 1.5rem;
+     display: flex; /* İçeriği dikeyde hizalamak için */
+    flex-direction: column; /* İçeriği dikey sırala */
+    justify-content: space-between; /* Alanı eşit dağıt */
 }
 
 .feature-item img {
@@ -159,17 +170,20 @@ h2 {
 .tramway-section {
     flex-shrink: 0; /* Küçülmesini engelle */
     width: 100vw; /* Ekran genişliği kadar */
-    height: 100%;
+    height: auto; /* İçeriğe göre yükseklik */
     display: flex;
-    align-items: center;
+    align-items: center; /* Tramvay görselini dikeyde ortala */
     justify-content: center;
-    overflow: hidden;
+    padding: 30px 0; /* Görselin etrafına boşluk */
+    box-sizing: border-box;
 }
 
 .tramway-image {
-    width: 100%; /* Tramvay görseli tam genişlikte */
-    height: auto;
-    object-fit: cover;
+    width: auto; /* Genişlik otomatik, yüksekliğe göre ayarlanacak */
+    max-width: 90%; /* Ekran genişliğinin %90'ını geçmesin */
+    max-height: 400px; /* Kutuların yüksekliğine benzer bir maksimum yükseklik */
+    object-fit: contain; /* Oranları koruyarak sığdır */
+    border-radius: 8px; /* Kenarları yumuşat */
 }
 
 /* Üniversiteler */
