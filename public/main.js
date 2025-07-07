@@ -54,16 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const featureGrid = document.querySelector(".feature-grid");
   const tramwaySection = document.querySelector(".tramway-section");
 
-  gsap.to(horizontalContainer, {
-    x: () => -(featureGrid.scrollWidth + tramwaySection.offsetWidth - window.innerWidth), // Tüm maddeler ve tramvay görseli ekranı geçene kadar kaydır
-    ease: "none",
-    scrollTrigger: {
-      trigger: ".horizontal-scroll-container",
-      start: "top top",
-      pin: true,
-      scrub: 1,
-      end: () => "+=" + (featureGrid.scrollWidth + tramwaySection.offsetWidth - window.innerWidth + (window.innerWidth / 2 - tramwaySection.offsetWidth / 2)), // Tramvay ekranın ortasına geldiğinde bitir
-    }
+  window.addEventListener('load', () => {
+    const scrollDistance = featureGrid.scrollWidth + (
+      tramwaySection.offsetLeft - (window.innerWidth / 2 - tramwaySection.offsetWidth / 2)
+    );
+
+    gsap.to(horizontalContainer, {
+      x: -scrollDistance,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".horizontal-scroll-container",
+        start: "top top",
+        pin: true,
+        scrub: 1,
+        end: () => "+=" + scrollDistance,
+      }
+    });
   });
 
   // Logo küçültme animasyonu (sadece masaüstü için)
