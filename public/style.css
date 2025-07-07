@@ -122,18 +122,19 @@ h2 {
 /* Şehir Tanıtımı - Yatay Kaydırma */
 .horizontal-scroll-container {
     display: flex;
-    height: 80vh; /* Animasyon için belirli bir yükseklik */
     overflow: hidden; /* Dışarı taşanları gizle */
-    align-items: center;
+    /* Yükseklik JavaScript ile ayarlanacak */
+    /* align-items CSS'i şimdilik kaldırıldı, JS ile hizalama düşünülebilir */
 }
 
 .feature-grid {
     display: flex; /* Yatayda sıralamak için */
-    align-items: stretch; /* Yükseklikleri eşitle */
+    /* align-items: stretch; */ /* Kaldırıldı, JS ile yönetilecek */
     gap: 30px;
-    padding: 0 5vw; /* Kenarlardan boşluk */
+    padding: 20px 5vw; /* Kenarlardan boşluk */
     box-sizing: border-box;
     flex-shrink: 0; /* Küçülmesini engelle */
+    /* height: auto; */ /* JS ile ayarlanacak */
 }
 
 .feature-item {
@@ -144,6 +145,10 @@ h2 {
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     padding: 1.5rem;
+   display: flex; /* İçeriği dikeyde hizalamak için */
+    flex-direction: column; /* İçeriği dikey sırala */
+    justify-content: space-between; /* Alanı eşit dağıt */
+    height: auto; /* İçeriğe göre yükseklik */
 }
 
 .feature-item img {
@@ -157,17 +162,21 @@ h2 {
 .tramway-section {
     flex-shrink: 0; /* Küçülmesini engelle */
     width: 100vw; /* Ekran genişliği kadar */
-    height: 100%;
+    /* height: auto; */ /* JS ile ayarlanacak */
     display: flex;
-    align-items: center;
+    align-items: center; /* Tramvay görselini dikeyde ortala */
     justify-content: center;
-    overflow: hidden;
+    padding: 20px; /* Görselin etrafına boşluk */
+    box-sizing: border-box;
 }
 
 .tramway-image {
-    width: 100%; /* Tramvay görseli tam genişlikte */
-    height: auto;
-    object-fit: cover;
+    width: auto; /* Genişlik otomatik, yüksekliğe göre ayarlanacak */
+    max-width: 100%;
+    /* height: auto; */ /* JS ile ayarlanacak veya max-height ile sınırlanacak */
+    max-height: 55vh; /* Makul bir maksimum yükseklik, JS bunu geçersiz kılabilir */
+    object-fit: contain; /* Oranları koruyarak sığdır */
+    border-radius: 8px; /* Kenarları yumuşat */
 }
 
 /* Üniversiteler */

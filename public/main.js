@@ -60,6 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const tramwaySection = document.querySelector(".tramway-section");
 
   window.addEventListener('load', () => {
+       // Dinamik Yükseklik Ayarlama Başlangıcı
+    if (horizontalContainer && featureGrid && tramwaySection) {
+      const featureGridHeight = featureGrid.offsetHeight;
+      const tramwaySectionHeight = tramwaySection.offsetHeight;
+      const maxHeight = Math.max(featureGridHeight, tramwaySectionHeight);
+      horizontalContainer.style.minHeight = `${maxHeight}px`;
+      // İsteğe bağlı: featureGrid ve tramwaySection'a da aynı yüksekliği vermek
+       featureGrid.style.height = `${maxHeight}px`;
+       tramwaySection.style.height = `${maxHeight}px`;
+    }
+    // Dinamik Yükseklik Ayarlama Sonu
+
     const scrollDistance = featureGrid.scrollWidth + (
       tramwaySection.offsetLeft - (window.innerWidth / 2 - tramwaySection.offsetWidth / 2)
     );
@@ -73,6 +85,22 @@ document.addEventListener('DOMContentLoaded', () => {
         pin: true,
         scrub: 1,
         end: () => "+=" + scrollDistance,
+        onRefresh: () => {
+          // Pencere yeniden boyutlandırıldığında yükseklikleri tekrar hesapla
+          if (horizontalContainer && featureGrid && tramwaySection) {
+            // Önce minHeight'ı sıfırla ki doğal yükseklikler doğru ölçülebilsin
+            horizontalContainer.style.minHeight = '0px';
+            // featureGrid.style.height = 'auto'; // Eğer bu elemanlara da height verildiyse
+            // tramwaySection.style.height = 'auto'; // Eğer bu elemanlara da height verildiyse
+
+            const featureGridHeight = featureGrid.offsetHeight;
+            const tramwaySectionHeight = tramwaySection.offsetHeight;
+            const maxHeight = Math.max(featureGridHeight, tramwaySectionHeight);
+            horizontalContainer.style.minHeight = `${maxHeight}px`;
+            // featureGrid.style.height = `${maxHeight}px`;
+            // tramwaySection.style.height = `${maxHeight}px`;
+          }
+        }
       }
     });
   });
