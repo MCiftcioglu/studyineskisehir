@@ -73,11 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Arka plan için zoom out efekti
   heroTimeline.fromTo(
-    '.city-skyline',
+    '.hero-background-pieces',
     { scale: 1.2 },
     { scale: 1, duration: 2, ease: 'none' },
     0
   );
+
+  // Parçaların ayrılma animasyonu
+  heroTimeline.to('.bg-piece.center-left', { x: '-100vw', duration: 2, ease: 'power2.out' }, 0);
+  heroTimeline.to('.bg-piece.center-right', { x: '100vw', duration: 2, ease: 'power2.out' }, 0);
+  heroTimeline.to('.bg-piece.center', { scale: 0.8, opacity: 0, duration: 2, ease: 'power2.out' }, 0);
+  heroTimeline.to('.bg-piece.bottom-right', { x: '30%', y: '30%', opacity: 0, duration: 2, ease: 'power2.out' }, 0);
 
   // Bulutların sağa ve sola açılması
   heroTimeline.to('.cloud-1', { x: '-50%', opacity: 0, duration: 2 }, 0);
@@ -104,6 +110,24 @@ document.addEventListener('DOMContentLoaded', () => {
       stagger: 0.05, // Harfler arasında gecikme
       scrollTrigger: {
         trigger: nedenEskisehirH2,
+        start: 'top 80%', // Başlık ekrana girdiğinde başla
+        toggleActions: 'play none none reverse',
+      }
+    });
+  }
+
+  // Nerede Eğitim Almalı? başlığı için animasyon
+  const neredeEgitimH2 = document.querySelector('#universiteler h2');
+  if (neredeEgitimH2) {
+    const h2CharsNerede = splitText('#universiteler h2');
+    gsap.from(h2CharsNerede, {
+      y: -50, // Yukarıdan gelme efekti
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      stagger: 0.05, // Harfler arasında gecikme
+      scrollTrigger: {
+        trigger: neredeEgitimH2,
         start: 'top 80%', // Başlık ekrana girdiğinde başla
         toggleActions: 'play none none reverse',
       }
@@ -140,15 +164,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Logo küçültme ve konumlandırma animasyonu
-  gsap.to(".site-logo img", {
+  gsap.to(".site-logo", {
     scrollTrigger: {
       trigger: ".hero-section",
       start: "top top",
       end: "bottom top",
       scrub: 1,
+      onUpdate: self => {
+        if (self.progress > 0) {
+          gsap.to(".site-logo", { opacity: 1, pointerEvents: "auto", duration: 0.3 });
+          gsap.to(".site-logo img", { width: "80px", ease: "power2.out" });
+        } else {
+          gsap.to(".site-logo", { opacity: 0, pointerEvents: "none", duration: 0.3 });
+          gsap.to(".site-logo img", { width: "200px", ease: "power2.out" });
+        }
+      }
     },
-    width: "80px",
-    ease: "power2.out"
   });
 
   // Logoya tıklandığında en üste smooth scroll
