@@ -1,10 +1,8 @@
-import '../css/style.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
 
 document.addEventListener('DOMContentLoaded', () => {
   // Helper function to split text into spans for animation
@@ -65,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollTrigger: {
       trigger: '.hero-section',
       start: 'top top', // Animasyon ne zaman başlayacak
-      end: 'bottom top', // Animasyon ne zaman bitecek
+      end: 'center top', // Animasyon daha erken bitecek
       scrub: 1, // Scroll hızına bağlı olarak animasyonu yumuşat
       pin: true, // Hero section'ı scroll süresince sabitler
     },
@@ -134,14 +132,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Nasıl Başvurmalı? başlığı için animasyon
+  const nasilBasvurH2 = document.querySelector('#nasil-basvurmalı h2');
+  if (nasilBasvurH2) {
+    const h2CharsNasil = splitText('#nasil-basvurmalı h2');
+    gsap.from(h2CharsNasil, {
+      y: -50, // Yukarıdan gelme efekti
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      stagger: 0.05, // Harfler arasında gecikme
+      scrollTrigger: {
+        trigger: nasilBasvurH2,
+        start: 'top 80%', // Başlık ekrana girdiğinde başla
+        toggleActions: 'play none none reverse',
+      }
+    });
+  }
+
   if (horizontalContainer && featureGrid && featureGrid.scrollWidth > window.innerWidth) {
     const horizontalScrollTimeline = gsap.timeline({
       scrollTrigger: {
-        trigger: horizontalContainer,
-        start: 'top top',
+        trigger: horizontalContainer, // Yatay kapsayıcıyı tetikleyici yap
+        start: 'top top', // Kapsayıcı viewport'un üstüne geldiğinde sabitle
         end: () => '+=' + (featureGrid.scrollWidth - window.innerWidth),
         scrub: 1,
-        pin: true,
+        pin: true, // Tetikleyiciyi sabitle
         anticipatePin: 1,
       }
     });
@@ -190,4 +206,39 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.to(window, { duration: 1, scrollTo: 0, ease: 'power2.inOut' });
     });
   }
+
+  // Nasıl Başvurmalı kartları için flip animasyonu ve renk ayarları
+  document.querySelectorAll('.apply-option').forEach((card, index) => {
+    const cardFront = card.querySelector('.card-front');
+    const cardBack = card.querySelector('.card-back');
+
+    // Ana kartlara renk ver (flip animasyonu sırasında bu renkler korunur)
+    if (index === 0) {
+      card.style.backgroundColor = '#FFD700'; // İlk kart sarı
+    } else if (index === 1) {
+      card.style.backgroundColor = '#87CEEB'; // İkinci kart açık mavi
+    }
+
+    // Flip olduğunda gösterilecek arka yüz beyaz
+    if (cardBack) {
+      cardBack.style.backgroundColor = '#FFFFFF'; // Beyaz
+    }
+
+    // Ön yüz şeffaf olsun ki ana kartın rengi görünsün
+    if (cardFront) {
+      cardFront.style.backgroundColor = 'transparent';
+    }
+
+    gsap.set(cardBack, { rotationY: -180 }); // Arka yüzü başlangıçta ters çevir
+
+    card.addEventListener('mouseenter', () => {
+      gsap.to(cardFront, { rotationY: 180, duration: 0.6, ease: 'power2.inOut' });
+      gsap.to(cardBack, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      gsap.to(cardFront, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' });
+      gsap.to(cardBack, { rotationY: -180, duration: 0.6, ease: 'power2.inOut' });
+    });
+  });
 });
