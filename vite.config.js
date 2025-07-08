@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: 'public', // index.html dosyasının bulunduğu dizin
+  root: 'src',
+  publicDir: '../public',
   build: {
-    outDir: '../dist', // Üretim build çıktısının dizini
-  },
-  publicDir: '../public', // Statik varlıkların bulunduğu dizin
+    outDir: '../dist',
+    rollupOptions: {
+      input: '/index.html'
+    }
+  }
 });

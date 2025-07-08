@@ -126,15 +126,7 @@ studyineskisehir/
 
 ---
 
-## 🗓️ Geliştirme Takvimi (Örnek)
 
-| Aşama | Zaman Aralığı |
-|-------|----------------|
-| Prototip ve wireframe | 2 gün |
-| Hero section + bulut efektleri | 2 gün |
-| Tüm bölümlerin yerleşimi | 3–4 gün |
-| Mobil optimizasyon | 2 gün |
-| Test ve deploy | 1–2 gün |
 
 ---
 

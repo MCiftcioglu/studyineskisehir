@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // GSAP ve ScrollTrigger Entegrasyonu
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 
   // Hero Section Animasyonları
   const heroTimeline = gsap.timeline({
@@ -49,10 +49,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 0);
 
   // Hero içeriğinin yavaşça kaybolması
-  heroTimeline.to('.hero-content', {
-    opacity: 0,
-    duration: 1,
-  }, 0.5); // Zoom başladıktan biraz sonra başlasın
+  // heroTimeline.to('.hero-content', {
+  //   opacity: 0,
+  //   duration: 1,
+  // }, 0.5); // Zoom başladıktan biraz sonra başlasın
+
+  // Metinleri harflere ayırma
+  const heroTitle = document.querySelector('.hero-content h1');
+  const heroSubtitle = document.querySelector('.hero-content p');
+
+  if (heroTitle && heroSubtitle) {
+    const splitTitle = new SplitText(heroTitle, { type: 'chars' });
+    const splitSubtitle = new SplitText(heroSubtitle, { type: 'chars' });
+
+    // Başlık harf animasyonu
+    heroTimeline.from(splitTitle.chars, {
+      duration: 0.8,
+      opacity: 0,
+      y: -50,
+      ease: 'power1.out',
+      stagger: 0.05, // Her harf arasında 0.05 saniye gecikme
+    }, 0.5); // Animasyonun başlangıç zamanı (heroTimeline içinde)
+
+    // Alt başlık harf animasyonu
+    heroTimeline.from(splitSubtitle.chars, {
+      duration: 0.6,
+      opacity: 0,
+      y: -30,
+      ease: 'power1.out',
+      stagger: 0.03,
+    }, 0.8); // Başlık animasyonundan biraz sonra başlasın
+  }
+   
 
   // Yatay Kaydırma Animasyonu (Neden Eskişehir bölümü için)
   const horizontalContainer = document.querySelector('.horizontal-scroll-container');
@@ -126,25 +154,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Logo küçültme animasyonu (sadece masaüstü için)
-  ScrollTrigger.matchMedia({
-    // Masaüstü (768px ve üstü)
-    "(min-width: 768px)": function() {
-      gsap.to(".site-logo img", {
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "bottom center",
-          toggleActions: "play none none reverse",
-          scrub: 0.5,
-        },
-        width: "80px",
-      });
-    },
+  // Logo küçültme ve konumlandırma animasyonu
+  ScrollTrigger.create({
+    trigger: ".hero-section",
+    start: "top top",
+    end: "bottom top",
+    onUpdate: self => {
+      const logo = document.querySelector(".site-logo");
+      if (self.progress > 0) {
+        logo.classList.add("fixed-logo");
+        gsap.to(logo.querySelector("img"), {width: "80px", ease: "power2.out"});
+      } else {
+        logo.classList.remove("fixed-logo");
+        gsap.to(logo.querySelector("img"), {width: "200px", ease: "power2.out"});
+      }
+    }
   });
 
   // Logoya tıklandığında en üste smooth scroll
-  document.querySelector('.site-logo').addEventListener('click', (e) => {
-    e.preventDefault(); // Varsayılan link davranışını engelle
-    gsap.to(window, { duration: 1, scrollTo: 0, ease: "power2.inOut" });
-  });
+  const siteLogo = document.querySelector('.site-logo');
+  if (siteLogo) {
+    siteLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      gsap.to(window, { duration: 1, scrollTo: 0, ease: 'power2.inOut' });
+    });
+  }
 });

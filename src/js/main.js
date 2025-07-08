@@ -1,4 +1,54 @@
+import '../css/style.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { gsap } from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Helper function to split text into spans for animation
+  function splitText(selector) {
+    const element = document.querySelector(selector);
+    if (element) {
+      const text = element.innerText;
+      element.innerHTML = '';
+      text.split('').forEach(char => {
+        const span = document.createElement('span');
+        // Replace spaces with non-breaking spaces to maintain layout
+        span.innerHTML = char === ' ' ? '&nbsp;' : char;
+        span.style.display = 'inline-block';
+        element.appendChild(span);
+      });
+      return element.querySelectorAll('span');
+    }
+    return [];
+  }
+
+  // Split hero content text into characters
+  const h1Chars = splitText('.hero-content h1');
+  const pChars = splitText('.hero-content p');
+
+  // Animate hero text on page load
+  if (h1Chars.length > 0) {
+    gsap.from(h1Chars, {
+      y: -100,
+      opacity: 0,
+      duration: 1.2,
+      ease: 'bounce.out',
+      stagger: 0.05,
+    });
+  }
+  if (pChars.length > 0) {
+    gsap.from(pChars, {
+      y: -50,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      stagger: 0.02,
+    }, '-=1.0'); // Start this animation slightly before the h1 animation finishes
+  }
+
   // AOS (Animate on Scroll) Kütüphanesini Başlatma
   AOS.init({
     duration: 1000,
@@ -8,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // GSAP ve ScrollTrigger Entegrasyonu
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
   // Hero Section Animasyonları
   const heroTimeline = gsap.timeline({
@@ -30,102 +80,58 @@ document.addEventListener('DOMContentLoaded', () => {
   );
 
   // Bulutların sağa ve sola açılması
-  heroTimeline.to('.cloud-1', {
-    x: '-50%', // Sola doğru %50 kaydır
-    opacity: 0,
-    duration: 2,
-  }, 0);
-
-  heroTimeline.to('.cloud-2', {
-    x: '50%', // Sağa doğru %50 kaydır
-    opacity: 0,
-    duration: 2,
-  }, 0);
-  
-    heroTimeline.to('.cloud-3', {
-    x: '-30%', // Sola doğru %30 kaydır
-    opacity: 0,
-    duration: 2,
-  }, 0);
+  heroTimeline.to('.cloud-1', { x: '-50%', opacity: 0, duration: 2 }, 0);
+  heroTimeline.to('.cloud-2', { x: '50%', opacity: 0, duration: 2 }, 0);
+  heroTimeline.to('.cloud-3', { x: '-30%', opacity: 0, duration: 2 }, 0);
 
   // Hero içeriğinin yavaşça kaybolması
-  heroTimeline.to('.hero-content', {
-    opacity: 0,
-    duration: 1,
-  }, 0.5); // Zoom başladıktan biraz sonra başlasın
+  heroTimeline.to('.hero-content', { opacity: 0, duration: 1 }, 0.5);
 
   // Yatay Kaydırma Animasyonu (Neden Eskişehir bölümü için)
   const horizontalContainer = document.querySelector('.horizontal-scroll-container');
   const featureGrid = document.querySelector('.feature-grid');
-  const tramwaySection = document.querySelector('.tramway-section');
-  const tramwayImage = document.querySelector('.tramway-image');
-  const universitelerSection = document.querySelector('#universiteler');
-
-  // Yatay kaydırma için toplam mesafe
-  const totalScrollDistance = featureGrid.scrollWidth + tramwayImage.offsetWidth;
-
-  // Yatay kaydırma timeline'ı
-  const horizontalScrollTimeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: horizontalContainer,
-      start: 'top top',
-      end: () => '+=' + totalScrollDistance, // Toplam kaydırma mesafesi
-      scrub: 1,
-      pin: true,
-      anticipatePin: 1, // Pinleme geçişini yumuşatır
-      onUpdate: self => {
-        // Tramvay görseli sayfanın ortasına geldiğinde dikey kaydırmaya geçiş
-        const tramwayRect = tramwayImage.getBoundingClientRect();
-        const viewportCenter = window.innerWidth / 2;
-
-        if (tramwayRect.left <= viewportCenter && tramwayRect.right >= viewportCenter) {
-          // Dikey kaydırmaya geçişi tetikle
-          gsap.to(window, {
-            duration: 1,
-            scrollTo: { y: universitelerSection, autoKill: false },
-            ease: 'power2.inOut'
-          });
-        }
+  
+  if (horizontalContainer && featureGrid && featureGrid.scrollWidth > window.innerWidth) {
+    const horizontalScrollTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: horizontalContainer,
+        start: 'top top',
+        end: () => '+=' + (featureGrid.scrollWidth - window.innerWidth),
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
       }
-    }
-  });
+    });
 
-  // 7 kutunun sağdan sola kayması
-  horizontalScrollTimeline.to(featureGrid, {
-    x: () => -(featureGrid.scrollWidth - window.innerWidth),
-    ease: 'none'
-  });
-
-  // Tramvay görselinin sağdan sola kayması
-  horizontalScrollTimeline.to(tramwayImage, {
-    x: () => -(tramwayImage.offsetWidth + window.innerWidth / 2), // Tramvayın ortalanması için ayar
-    ease: 'none'
-  }, '<+=0.5'); // Kutular kaymaya başladıktan biraz sonra başla
+    horizontalScrollTimeline.to(featureGrid, {
+      x: () => -(featureGrid.scrollWidth - window.innerWidth),
+      ease: 'none'
+    });
+  }
 
   // Resize durumunda ScrollTrigger'ı yenile
   window.addEventListener('resize', () => {
     ScrollTrigger.refresh();
   });
 
-  // Logo küçültme animasyonu (sadece masaüstü için)
-  ScrollTrigger.matchMedia({
-    // Masaüstü (768px ve üstü)
-    "(min-width: 768px)": function() {
-      gsap.to(".site-logo img", {
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "bottom center",
-          toggleActions: "play none none reverse",
-          scrub: 0.5,
-        },
-        width: "80px",
-      });
+  // Logo küçültme ve konumlandırma animasyonu
+  gsap.to(".site-logo img", {
+    scrollTrigger: {
+      trigger: ".hero-section",
+      start: "top top",
+      end: "bottom top",
+      scrub: 1,
     },
+    width: "80px",
+    ease: "power2.out"
   });
 
   // Logoya tıklandığında en üste smooth scroll
-  document.querySelector('.site-logo').addEventListener('click', (e) => {
-    e.preventDefault(); // Varsayılan link davranışını engelle
-    gsap.to(window, { duration: 1, scrollTo: 0, ease: "power2.inOut" });
-  });
+  const siteLogo = document.querySelector('.site-logo');
+  if (siteLogo) {
+    siteLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      gsap.to(window, { duration: 1, scrollTo: 0, ease: 'power2.inOut' });
+    });
+  }
 });
