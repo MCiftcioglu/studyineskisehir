@@ -86,11 +86,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Hero içeriğinin yavaşça kaybolması
   heroTimeline.to('.hero-content', { opacity: 0, duration: 1 }, 0.5);
+  heroTimeline.to('.hero-logo', { opacity: 0, duration: 1 }, 0.5);
 
   // Yatay Kaydırma Animasyonu (Neden Eskişehir bölümü için)
   const horizontalContainer = document.querySelector('.horizontal-scroll-container');
   const featureGrid = document.querySelector('.feature-grid');
   
+  // Neden Eskişehir başlığı için animasyon
+  const nedenEskisehirH2 = document.querySelector('#sehir h2');
+  if (nedenEskisehirH2) {
+    const h2Chars = splitText('#sehir h2');
+    gsap.from(h2Chars, {
+      y: -50, // Yukarıdan gelme efekti
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      stagger: 0.05, // Harfler arasında gecikme
+      scrollTrigger: {
+        trigger: nedenEskisehirH2,
+        start: 'top 80%', // Başlık ekrana girdiğinde başla
+        toggleActions: 'play none none reverse',
+      }
+    });
+  }
+
   if (horizontalContainer && featureGrid && featureGrid.scrollWidth > window.innerWidth) {
     const horizontalScrollTimeline = gsap.timeline({
       scrollTrigger: {
@@ -105,7 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     horizontalScrollTimeline.to(featureGrid, {
       x: () => -(featureGrid.scrollWidth - window.innerWidth),
-      ease: 'none'
+      ease: 'none',
+      onUpdate: () => {
+        const line = document.querySelector('.horizontal-line');
+        if (line) {
+          line.style.width = `${featureGrid.scrollWidth}px`;
+        }
+      }
     });
   }
 

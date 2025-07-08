@@ -14,7 +14,7 @@ body {
 }
 
 .section {
-    padding: 80px 0;
+    padding: 40px 0; /* Boşluk azaltıldı */
 }
 
 .bg-light {
@@ -24,7 +24,7 @@ body {
 h2 {
     font-size: 2.5rem;
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 20px; /* Boşluk daha da azaltıldı */
 }
 
 /* Logo */
@@ -81,9 +81,19 @@ h2 {
 .cloud-2 { background-image: url('/images/cloud2.png'); }
 .cloud-3 { background-image: url('/images/cloud3.png'); }
 
+.hero-logo {
+    position: absolute;
+    top: 20%; /* Daha yukarıda */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px; /* Biraz daha büyük */
+    z-index: 3;
+}
+
 .hero-content {
     position: relative;
     z-index: 2;
+    margin-top: 150px; /* Logonun altına daha fazla boşluk bırakmak için */
 }
 
 .hero-content h1 {
@@ -115,25 +125,52 @@ h2 {
 
 /* Yatay Kaydırma */
 .horizontal-scroll-container {
-    height: 100vh;
+    height: auto; /* Yüksekliği içeriğe göre ayarla */
     width: 100%;
     overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center; /* İçeriği dikeyde ortala */
+    padding-bottom: 80px; /* Alt boşluk ekle */
+}
+
+.horizontal-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 50px; /* Çizgi kalınlığı */
+    background-color: orange; /* Turuncu renk */
+    z-index: 0;
 }
 
 .feature-grid {
     display: flex;
     width: max-content;
     padding: 20px;
+    position: relative;
+    z-index: 1; /* Kutuların çizginin üstünde olması için */
 }
 
 .feature-item {
     width: 400px;
     margin-right: 40px;
     text-align: center;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
 }
 
 .feature-item img {
-    width: 100%;
+    width: 250px; /* Sabit genişlik */
+    height: 150px; /* Sabit yükseklik */
+    object-fit: cover; /* Oranları koruyarak kutuyu doldur */
     border-radius: 10px;
     margin-bottom: 20px;
 }
@@ -155,7 +192,9 @@ h2 {
 }
 
 .card img {
-    max-width: 100px;
+    width: 80px; /* Sabit genişlik */
+    height: 80px; /* Sabit yükseklik */
+    object-fit: contain; /* Oranları koruyarak kutuya sığdır */
     margin-bottom: 20px;
 }
 
