@@ -55,29 +55,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 0.5); // Zoom başladıktan biraz sonra başlasın
 
   // Yatay Kaydırma Animasyonu (Neden Eskişehir bölümü için)
-  const horizontalContainer = document.querySelector(".horizontal-scroll-container");
-  const featureGrid = document.querySelector(".feature-grid");
-  const tramwaySection = document.querySelector(".tramway-section");
+  const horizontalContainer = document.querySelector('.horizontal-scroll-container');
+  const featureGrid = document.querySelector('.feature-grid');
+  const tramwaySection = document.querySelector('.tramway-section');
+  const tramwayImage = document.querySelector('.tramway-image');
+  const universitelerSection = document.querySelector('#universiteler');
 
- // Sayfadaki tüm görseller yüklendikten sonra hesaplama yap
-  window.addEventListener('load', () => {
-    const scrollDistance = featureGrid.scrollWidth + (
-      tramwaySection.offsetLeft - (window.innerWidth / 2 - tramwaySection.offsetWidth / 2)
-    );
+  // Yatay kaydırma için toplam mesafe
+  const totalScrollDistance = featureGrid.scrollWidth + tramwayImage.offsetWidth;
 
-   gsap.to(horizontalContainer, {
-      x: -scrollDistance,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".horizontal-scroll-container",
-        start: "top top",
-        pin: true,
-        scrub: 1,
-        end: () => "+=" + scrollDistance,
+  // Yatay kaydırma timeline'ı
+  const horizontalScrollTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: horizontalContainer,
+      start: 'top top',
+      end: () => '+=' + totalScrollDistance, // Toplam kaydırma mesafesi
+      scrub: 1,
+      pin: true,
+      anticipatePin: 1, // Pinleme geçişini yumuşatır
+      onUpdate: self => {
+        // Tramvay görseli sayfanın ortasına geldiğinde dikey kaydırmaya geçiş
+        const tramwayRect = tramwayImage.getBoundingClientRect();
+        const viewportCenter = window.innerWidth / 2;
+
+        if (tramwayRect.left <= viewportCenter && tramwayRect.right >= viewportCenter) {
+          // Dikey kaydırmaya geçişi tetikle
+          gsap.to(window, {
+            duration: 1,
+            scrollTo: { y: universitelerSection, autoKill: false },
+            ease: 'power2.inOut'
+          });
+        }
       }
-    });
+    }
+  });
 
-    });
+  // 7 kutunun sağdan sola kayması
+  horizontalScrollTimeline.to(featureGrid, {
+    x: () => -(featureGrid.scrollWidth - window.innerWidth),
+    ease: 'none'
+  });
+
+  // Tramvay görselinin sağdan sola kayması
+  horizontalScrollTimeline.to(tramwayImage, {
+    x: () => -(tramwayImage.offsetWidth + window.innerWidth / 2), // Tramvayın ortalanması için ayar
+    ease: 'none'
+  }, '<+=0.5'); // Kutular kaymaya başladıktan biraz sonra başla
+
+  // Resize durumunda ScrollTrigger'ı yenile
+  window.addEventListener('resize', () => {
+    ScrollTrigger.refresh();
+  });
 
   // Logo küçültme animasyonu (sadece masaüstü için)
   ScrollTrigger.matchMedia({

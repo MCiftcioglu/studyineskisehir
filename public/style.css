@@ -10,8 +10,6 @@ body {
 /* Logo Stili */
 .site-logo {
     position: fixed; /* Sayfa scroll olsa bile sabit kalır */
-    top: 15px;
-    left: 15px;
     z-index: 1000; /* Diğer tüm elementlerin üzerinde olmasını sağlar */
     display: block;
 }
@@ -34,7 +32,7 @@ body {
 }
 
 .section {
-    padding: 60px 0;
+    padding: 30px 0;
 }
 
 .bg-light {
@@ -49,7 +47,7 @@ h1, h2, h3 {
 h2 {
     text-align: center;
     font-size: 2.5rem;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 /* Hero Section */
@@ -123,61 +121,55 @@ h2 {
 .horizontal-scroll-container {
     display: flex;
     overflow: hidden; /* Dışarı taşanları gizle */
-    /* Yükseklik JavaScript ile ayarlanacak */
-    /* align-items CSS'i şimdilik kaldırıldı, JS ile hizalama düşünülebilir */
+    height: auto; /* Yatay kaydırma için yeterli dikey alan sağlar */
+    position: relative; /* Pinleme için gerekli */
+}
+
+.horizontal-scroll-container::before {
+    content: '';
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: 0;
+    width: 100%;
+    height: 50px; /* Thin line */
+    background-color: orange;
+    transform: translateY(-50%); /* Adjust for perfect centering */
+    z-index: 0; /* Ensure it's behind the content */
 }
 
 .feature-grid {
     display: flex; /* Yatayda sıralamak için */
-    /* align-items: stretch; */ /* Kaldırıldı, JS ile yönetilecek */
-    gap: 30px;
-    padding: 20px 5vw; /* Kenarlardan boşluk */
+    gap: 20px;
+    padding: 15px 3vw; /* Kenarlardan boşluk */
     box-sizing: border-box;
     flex-shrink: 0; /* Küçülmesini engelle */
-    /* height: auto; */ /* JS ile ayarlanacak */
 }
 
 .feature-item {
-    width: 320px; /* Her bir kartın sabit genişliği */
+    width: 280px; /* Her bir kartın sabit genişliği */
     flex-shrink: 0; /* Kartların küçülmesini engelle */
     text-align: center;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    padding: 1.5rem;
-   display: flex; /* İçeriği dikeyde hizalamak için */
+    padding: 0.5rem;
+    display: flex; /* İçeriği dikeyde hizalamak için */
     flex-direction: column; /* İçeriği dikey sırala */
-    justify-content: space-between; /* Alanı eşit dağıt */
+    justify-content: flex-start; /* Alanı eşit dağıt */
     height: auto; /* İçeriğe göre yükseklik */
+    z-index: 1; /* Ensure it's above the line */
+    position: relative; /* Needed for z-index to work */
 }
 
 .feature-item img {
     width: 100%;
-    height: 200px;
+    height: 100px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
-.tramway-section {
-    flex-shrink: 0; /* Küçülmesini engelle */
-    width: 100vw; /* Ekran genişliği kadar */
-    /* height: auto; */ /* JS ile ayarlanacak */
-    display: flex;
-    align-items: center; /* Tramvay görselini dikeyde ortala */
-    justify-content: center;
-    padding: 20px; /* Görselin etrafına boşluk */
-    box-sizing: border-box;
-}
 
-.tramway-image {
-    width: auto; /* Genişlik otomatik, yüksekliğe göre ayarlanacak */
-    max-width: 100%;
-    /* height: auto; */ /* JS ile ayarlanacak veya max-height ile sınırlanacak */
-    max-height: 55vh; /* Makul bir maksimum yükseklik, JS bunu geçersiz kılabilir */
-    object-fit: contain; /* Oranları koruyarak sığdır */
-    border-radius: 8px; /* Kenarları yumuşat */
-}
 
 /* Üniversiteler */
 .card-deck {

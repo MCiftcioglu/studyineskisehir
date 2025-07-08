@@ -55,55 +55,76 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 0.5); // Zoom başladıktan biraz sonra başlasın
 
   // Yatay Kaydırma Animasyonu (Neden Eskişehir bölümü için)
-  const horizontalContainer = document.querySelector(".horizontal-scroll-container");
-  const featureGrid = document.querySelector(".feature-grid");
-  const tramwaySection = document.querySelector(".tramway-section");
+  const horizontalContainer = document.querySelector('.horizontal-scroll-container');
+  const featureGrid = document.querySelector('.feature-grid');
+  const featureItems = document.querySelectorAll('.feature-item');
 
-  window.addEventListener('load', () => {
-       // Dinamik Yükseklik Ayarlama Başlangıcı
-    if (horizontalContainer && featureGrid && tramwaySection) {
-      const featureGridHeight = featureGrid.offsetHeight;
-      const tramwaySectionHeight = tramwaySection.offsetHeight;
-      const maxHeight = Math.max(featureGridHeight, tramwaySectionHeight);
-      horizontalContainer.style.minHeight = `${maxHeight}px`;
-      // İsteğe bağlı: featureGrid ve tramwaySection'a da aynı yüksekliği vermek
-       featureGrid.style.height = `${maxHeight}px`;
-       tramwaySection.style.height = `${maxHeight}px`;
-    }
-    // Dinamik Yükseklik Ayarlama Sonu
+  if (horizontalContainer && featureGrid && featureItems.length > 0) {
+    const lastItem = featureItems[featureItems.length - 1];
+    const itemWidth = lastItem.offsetWidth;
+    const gap = 30; // Assuming 30px gap as per CSS
+    
+    // Calculate the x position to center the last item
+    // (n-1) * (itemWidth + gap) gives the start of the last item
+    // + itemWidth / 2 to get its center
+    // - window.innerWidth / 2 to align it to the center of the viewport
+    const xTranslation = -((featureItems.length - 1) * (itemWidth + gap) + itemWidth / 2 - window.innerWidth / 2);
 
-    const scrollDistance = featureGrid.scrollWidth + (
-      tramwaySection.offsetLeft - (window.innerWidth / 2 - tramwaySection.offsetWidth / 2)
-    );
+    console.log('xTranslation:', xTranslation);
 
-    gsap.to(horizontalContainer, {
-      x: -scrollDistance,
-      ease: "none",
+    gsap.to(featureGrid, {
+      x: xTranslation,
+      ease: 'none',
       scrollTrigger: {
-        trigger: ".horizontal-scroll-container",
-        start: "top top",
+        trigger: horizontalContainer,
+        start: 'top top',
         pin: true,
         scrub: 1,
-        end: () => "+=" + scrollDistance,
-        onRefresh: () => {
-          // Pencere yeniden boyutlandırıldığında yükseklikleri tekrar hesapla
-          if (horizontalContainer && featureGrid && tramwaySection) {
-            // Önce minHeight'ı sıfırla ki doğal yükseklikler doğru ölçülebilsin
-            horizontalContainer.style.minHeight = '0px';
-            // featureGrid.style.height = 'auto'; // Eğer bu elemanlara da height verildiyse
-            // tramwaySection.style.height = 'auto'; // Eğer bu elemanlara da height verildiyse
-
-            const featureGridHeight = featureGrid.offsetHeight;
-            const tramwaySectionHeight = tramwaySection.offsetHeight;
-            const maxHeight = Math.max(featureGridHeight, tramwaySectionHeight);
-            horizontalContainer.style.minHeight = `${maxHeight}px`;
-            // featureGrid.style.height = `${maxHeight}px`;
-            // tramwaySection.style.height = `${maxHeight}px`;
-          }
-        }
+        // Add some extra scroll distance to ensure smooth transition to vertical scroll
+        end: () => `+=${Math.abs(xTranslation) + window.innerHeight * 0.5}`, // Adding 50vh extra scroll
+        invalidateOnRefresh: true
       }
     });
-  });
+
+    window.addEventListener('resize', () => {
+      ScrollTrigger.refresh();
+    });
+  }
+
+  // Logo başlangıç pozisyonu ve scroll animasyonu
+  const siteLogo = document.getElementById('siteLogo');
+  const heroSection = document.getElementById('hero');
+
+  if (siteLogo && heroSection) {
+    const setInitialLogoPosition = () => {
+      const heroWidth = heroSection.offsetWidth;
+      const logoWidth = siteLogo.offsetWidth;
+      const heroHeight = heroSection.offsetHeight;
+      const logoHeight = siteLogo.offsetHeight;
+
+      const centeredLeft = (heroWidth - logoWidth) / 2;
+      const centeredTop = (heroHeight * 0.1); 
+
+      gsap.set(siteLogo, {
+        left: centeredLeft,
+        top: centeredTop,
+      });
+    };
+
+    setInitialLogoPosition();
+    window.addEventListener('resize', setInitialLogoPosition);
+
+    gsap.to(siteLogo, {
+      left: 15,
+      top: 15,
+      scrollTrigger: {
+        trigger: heroSection,
+        start: 'top top',
+        end: 'bottom top', 
+        scrub: true,
+      }
+    });
+  }
 
   // Logo küçültme animasyonu (sadece masaüstü için)
   ScrollTrigger.matchMedia({
